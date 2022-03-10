@@ -18,10 +18,16 @@ var camelcasize = function (str) {
  * @param  {document} document [Browser document object]
  * @return {HTMLElement}     [script Element]
  */
-var getExecutedScript = function () {
+var getExecutedScript = function (fallback) {
+  if ( fallback === void 0 ) fallback = true;
+
   return (
     document.currentScript ||
     (function () {
+      if (!fallback) {
+        throw new Error('currentScript not found');
+      }
+
       var scripts = document.getElementsByTagName("script");
       return scripts[scripts.length - 1];
     })()
@@ -104,9 +110,10 @@ var widgetDOMHostElements = function (
   var selector = ref.selector;
   var inline = ref.inline;
   var clientSpecified = ref.clientSpecified;
+  var scriptFallback = ref.scriptFallback;
 
   var hostNodes = [];
-  var currentScript = getExecutedScript();
+  var currentScript = getExecutedScript(scriptFallback);
 
   if (inline === true) {
     var parentNode = currentScript.parentNode;
@@ -157,19 +164,22 @@ var habitat = function (Widget) {
     var inline = ref.inline; if ( inline === void 0 ) inline = false;
     var clean = ref.clean; if ( clean === void 0 ) clean = false;
     var clientSpecified = ref.clientSpecified; if ( clientSpecified === void 0 ) clientSpecified = false;
+    var scriptFallback = ref.scriptFallback; if ( scriptFallback === void 0 ) scriptFallback = true;
     var defaultProps = ref.defaultProps; if ( defaultProps === void 0 ) defaultProps = {};
 
     var elements = widgetDOMHostElements({
       selector: selector,
       inline: inline,
-      clientSpecified: clientSpecified
+      clientSpecified: clientSpecified,
+      scriptFallback: scriptFallback
     });
     var loaded = function () {
       if (elements.length > 0) {
         var elements$1 = widgetDOMHostElements({
           selector: selector,
           inline: inline,
-          clientSpecified: clientSpecified
+          clientSpecified: clientSpecified,
+          scriptFallback: scriptFallback
         });
 
         return preactRender(widget, elements$1, root, clean, defaultProps);
