@@ -29,6 +29,11 @@ declare module "preact-habitat" {
      * @default false
      */
     clientSpecified?: boolean;
+    /**
+     * Fallback to last script on the page
+     * @default true
+     */
+    scriptFallback?: boolean
   }
   interface IHabitat {
     /**
