@@ -138,6 +138,9 @@ var widgetDOMHostElements = function (
 var preactRender = function (widget, hostElements, root, cleanRoot, defaultProps) {
   hostElements.forEach(function (elm) {
     var hostNode = elm;
+    if (!hostNode) {
+      return;
+    }
     if (hostNode._habitat) {
       return; 
     }
@@ -175,14 +178,18 @@ var habitat = function (Widget) {
     });
     var loaded = function () {
       if (elements.length > 0) {
-        var elements$1 = widgetDOMHostElements({
-          selector: selector,
-          inline: inline,
-          clientSpecified: clientSpecified,
-          scriptFallback: scriptFallback
-        });
+        try {
+          var elements$1 = widgetDOMHostElements({
+            selector: selector,
+            inline: inline,
+            clientSpecified: clientSpecified,
+            scriptFallback: scriptFallback
+          });
 
-        return preactRender(widget, elements$1, root, clean, defaultProps);
+          return preactRender(widget, elements$1, root, clean, defaultProps);
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
     loaded();
