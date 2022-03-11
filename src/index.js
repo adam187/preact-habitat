@@ -24,14 +24,18 @@ const habitat = Widget => {
     });
     let loaded = () => {
       if (elements.length > 0) {
-        let elements = widgetDOMHostElements({
-          selector,
-          inline,
-          clientSpecified,
-          scriptFallback
-        });
+        try {
+          let elements = widgetDOMHostElements({
+            selector,
+            inline,
+            clientSpecified,
+            scriptFallback
+          });
 
-        return preactRender(widget, elements, root, clean, defaultProps);
+          return preactRender(widget, elements, root, clean, defaultProps);
+        } catch (error) {
+          console.error(error);
+        }
       }
     };
     loaded();
